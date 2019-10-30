@@ -3,6 +3,7 @@ package metermodel
 import (
 	"encoding/json"
 	"net/http"
+	"github.com/sergiodii/golang-and-mongodb-api/app/models/MeterModels"
 )
 
 type Lista struct {
@@ -25,5 +26,6 @@ func Index(res http.ResponseWriter, req *http.Request) {
 		{Name: "sergio", List: "asdasdas"},
 		{Name: "sergio", List: "asdasdas"},
 	}
+	metermodels.InsertOne(teste)
 	respondWithJson(res, http.StatusOK, teste)
 }

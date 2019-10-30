@@ -10,12 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type DataBase struct {
-	Collection   string
-	_MongoClient *mongo.Client
-}
-
-func (c DataBase) _GetMongoClient() *mongo.Client {
+func GetMongoClient() *mongo.Client {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Erro on load .env file")
@@ -40,6 +35,5 @@ func (c DataBase) _GetMongoClient() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	c._MongoClient = client
 	return client
 }
