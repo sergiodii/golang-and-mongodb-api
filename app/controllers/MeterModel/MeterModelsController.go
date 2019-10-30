@@ -3,7 +3,8 @@ package metermodel
 import (
 	"encoding/json"
 	"net/http"
-	"github.com/sergiodii/golang-and-mongodb-api/app/models/MeterModels"
+
+	metermodels "github.com/sergiodii/golang-and-mongodb-api/app/models/MeterModels"
 )
 
 type Lista struct {
@@ -22,10 +23,12 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, map[string]string{"result": "success"})
 }
 func Index(res http.ResponseWriter, req *http.Request) {
-	teste := []Lista{
-		{Name: "sergio", List: "asdasdas"},
-		{Name: "sergio", List: "asdasdas"},
-	}
-	metermodels.InsertOne(teste)
-	respondWithJson(res, http.StatusOK, teste)
+	respondWithJson(res, http.StatusOK, metermodels.All())
+}
+
+func Store(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(http.StatusCreated)
+	result := metermodels.InsertOne(req.Body)
+	json.NewEncoder(res).Encode(result)
 }

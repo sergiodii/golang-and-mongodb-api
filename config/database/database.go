@@ -4,13 +4,20 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetMongoClient() *mongo.Client {
+func gererateContext() context.Context {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	return ctx
+}
+
+func GetMongoClient() (*mongo.Client, func() context.Context) {
+	ctx, _ := context.WithTimeout(gererateContext(), 10*time.Second)
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Erro on load .env file")
@@ -31,9 +38,9 @@ func GetMongoClient() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = client.Connect(context.Background())
+	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return client
+	return client, gererateContext
 }

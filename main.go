@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	metermodel "github.com/sergiodii/golang-and-mongodb-api/app/controllers/MeterModel"
+	metermodelController "github.com/sergiodii/golang-and-mongodb-api/app/controllers/MeterModel"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -16,10 +16,11 @@ func main() {
 	if err != nil {
 		log.Fatal("Erro on load .env file")
 	}
-	server := mux.NewRouter()
-	server.HandleFunc("/", metermodel.Index).Methods("GET")
+	route := mux.NewRouter()
+	route.HandleFunc("/", metermodelController.Index).Methods("GET")
+	route.HandleFunc("/", metermodelController.Store).Methods("POST")
 
 	var port = ":8000"
 	fmt.Println("Server running in port:", port)
-	log.Fatal(http.ListenAndServe(port, server))
+	log.Fatal(http.ListenAndServe(port, route))
 }
