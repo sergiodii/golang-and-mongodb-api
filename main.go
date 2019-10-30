@@ -18,6 +18,7 @@ func main() {
 	}
 	route := mux.NewRouter()
 	route.HandleFunc("/", metermodelController.Index).Methods("GET")
+	route.HandleFunc("/{id}", metermodelController.Show).Methods("GET")
 	route.HandleFunc("/", metermodelController.Store).Methods("POST")
 
 	var port = ":8000"

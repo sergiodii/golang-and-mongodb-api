@@ -17,10 +17,16 @@ import (
 
 var tablename = "meter_models"
 
+type MeterWithId struct {
+	ID     primitive.ObjectID     `json:"_id,omitempty" bson:"_id"`
+	Brand  string                 `json:"brand" bson:"brand"`
+	Client string                 `json:"client" bson:"client"`
+	Test   map[string]interface{} `json:"test" bson:"test,omitempty"`
+}
 type Meter struct {
-	ID     primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Brand  string             `json:"brand,omitempty" bson:"brand,omitempty"`
-	Client string             `json:"client,omitempty" bson:"client,omitempty"`
+	Brand  string                 `json:"brand" bson:"brand"`
+	Client string                 `json:"client" bson:"client"`
+	Test   map[string]interface{} `json:"test" bson:"test"`
 }
 
 var CollectionInfo, ctx = _GetMongoCollection()
@@ -43,15 +49,15 @@ func _GetMongoCollection() (*mongo.Collection, func() context.Context) {
 	return collection, ctxx
 }
 
-func All() []Meter {
-	var meters []Meter
+func All() []MeterWithId {
+	var meters []MeterWithId
 	cursor, err := CollectionInfo.Find(ctx(), bson.M{})
 	if err != nil {
 		log.Fatal("Erro on load all data: ", err)
 	}
 	defer cursor.Close(ctx())
 	for cursor.Next(ctx()) {
-		var atualMeter Meter
+		var atualMeter MeterWithId
 		cursor.Decode(&atualMeter)
 		meters = append(meters, atualMeter)
 	}
@@ -64,9 +70,19 @@ func All() []Meter {
 func InsertOne(ObjJson io.Reader) *mongo.InsertOneResult {
 	var meter Meter
 	json.NewDecoder(ObjJson).Decode(&meter)
-	result, err := CollectionInfo.InsertOne(ctx(), ObjJson)
+	result, err := CollectionInfo.InsertOne(ctx(), meter)
 	if err != nil {
 		log.Fatal("Erro on isert data in database: ", err)
 	}
 	return result
+}
+
+func GetById(id string) MeterWithId {
+	var meter MeterWithId
+	_ID, _ := primitive.ObjectIDFromHex(id)
+	err := CollectionInfo.FindOne(ctx(), bson.M{"_id": _ID}).Decode(&meter)
+	if err != nil {
+		log.Fatal("Erro on featch data in database: ", err)
+	}
+	return meter
 }

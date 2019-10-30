@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	metermodels "github.com/sergiodii/golang-and-mongodb-api/app/models/MeterModels"
 )
 
@@ -24,6 +25,11 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 }
 func Index(res http.ResponseWriter, req *http.Request) {
 	respondWithJson(res, http.StatusOK, metermodels.All())
+}
+
+func Show(res http.ResponseWriter, req *http.Request) {
+	parans := mux.Vars(req)
+	respondWithJson(res, http.StatusOK, metermodels.GetById(parans["id"]))
 }
 
 func Store(res http.ResponseWriter, req *http.Request) {
