@@ -20,6 +20,7 @@ func main() {
 	route.HandleFunc("/", metermodelController.Index).Methods("GET")
 	route.HandleFunc("/{id}", metermodelController.Show).Methods("GET")
 	route.HandleFunc("/", metermodelController.Store).Methods("POST")
+	route.HandleFunc("/{id}", metermodelController.Update).Methods("PUT")
 
 	var port = ":8000"
 	fmt.Println("Server running in port:", port)

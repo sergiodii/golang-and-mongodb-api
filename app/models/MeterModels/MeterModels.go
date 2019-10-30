@@ -86,3 +86,21 @@ func GetById(id string) MeterWithId {
 	}
 	return meter
 }
+
+func FindBy(list bson.M) []MeterWithId {
+	var meters []MeterWithId
+	cursor, err := CollectionInfo.Find(ctx(), list) // .FindOne(ctx(), bson.Marshal(list)).Decode(&meter)
+	if err != nil {
+		log.Fatal("Erro on featch data in database: ", err)
+	}
+	defer cursor.Close(ctx())
+	for cursor.Next(ctx()) {
+		var atualMeter MeterWithId
+		cursor.Decode(&atualMeter)
+		meters = append(meters, atualMeter)
+	}
+	if err := cursor.Err(); err != nil {
+		log.Fatal("Error: ", err)
+	}
+	return meters
+}
